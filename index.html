@@ -412,11 +412,14 @@ async function analyze() {
       })
     });
     var data = await response.json();
+    // Check for API error first
+    if (data.error) throw new Error('API Error: ' + JSON.stringify(data.error).substring(0,100));
+    if (!data.content) throw new Error('No content in response: ' + JSON.stringify(data).substring(0,100));
     var raw = (data.content||[]).find(function(b){return b.type==='text'});
     var text = raw ? raw.text : '';
     // Extract JSON from anywhere in the response
     var jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON found: ' + text.substring(0,200));
+    if (!jsonMatch) throw new Error('No JSON: ' + text.substring(0,100));
     var result = JSON.parse(jsonMatch[0]);
     // Validate required fields
     if (!result.score) throw new Error('Missing score field');
@@ -425,9 +428,9 @@ async function analyze() {
   } catch(e) {
     console.error('DRIP ERROR:', e.message);
     stopLoading();
-    // Show error score so we know it's the fallback
     var fb = getFallback();
-    fb.vibeTag = 'DEBUG: ' + e.message.substring(0,30);
+    fb.vibeTag = e.message.substring(0,50);
+    fb.verdict = 'Erreur technique: ' + e.message;
     showResult(fb);
   }
 }
