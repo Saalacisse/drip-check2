@@ -353,7 +353,7 @@ function showResult(r) {
   document.getElementById('compIcon').textContent = r.comparisonIcon;
   document.getElementById('compName').textContent = r.comparisonName;
   document.getElementById('compText').textContent = r.comparisonText;
-  document.getElementById('challengeText').textContent = r.challenge;
+  document.getElementById('challengeText').innerHTML = r.challenge;
   var refsRow = document.getElementById('refsRow');
   refsRow.innerHTML = '';
   if (r.refs) r.refs.forEach(function(ref){
