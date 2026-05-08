@@ -309,7 +309,7 @@ function doShare() {
     text: lang==='fr'
       ? 'J\'ai eu ' + (document.getElementById('scoreNum').textContent) + '/10 sur DRIP CHECK 👀 Tu feras mieux ?'
       : 'I got ' + (document.getElementById('scoreNum').textContent) + '/10 on DRIP CHECK 👀 Can you beat me?',
-    url: 'https://bit.ly/dripcheckV2'
+    url: 'https://dripcheck-app.netlify.app'
   };
   if (navigator.share) {
     navigator.share(shareData).catch(function(){});
