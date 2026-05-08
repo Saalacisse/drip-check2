@@ -395,12 +395,33 @@ function getFallback() {
   };
 }
 
+function compressImage(dataUrl, maxSize, quality) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var w = img.width, h = img.height;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else { w = Math.round(w * maxSize / h); h = maxSize; }
+      }
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+}
+
 async function analyze() {
   if (!imageData || !selectedOccasion) return;
   startLoading();
   try {
-    var mediaType = imageData.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
-    var b64 = imageData.split(',')[1];
+    // Compress image before sending
+    var compressedData = await compressImage(imageData, 800, 0.7);
+    var mediaType = 'image/jpeg';
+    var b64 = compressedData.split(',')[1];
     var response = await fetch('/.netlify/functions/analyze', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
