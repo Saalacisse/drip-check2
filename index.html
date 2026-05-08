@@ -304,6 +304,17 @@ function showToast(msg) {
 }
 
 function doShare() {
+  var score = document.getElementById('scoreNum').textContent;
+  var text = lang==='fr'
+    ? 'J\'ai eu ' + score + '/10 sur DRIP CHECK 🔥 Tu feras mieux ? → dripcheck-app.netlify.app'
+    : 'I got ' + score + '/10 on DRIP CHECK 🔥 Can you beat me? → dripcheck-app.netlify.app';
+  if (navigator.share) {
+    navigator.share({ title: 'DRIP CHECK ⚡', text: text, url: 'https://dripcheck-app.netlify.app' }).catch(function(){});
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText('https://dripcheck-app.netlify.app');
+    showToast(lang==='fr' ? '✅ Lien copié !' : '✅ Link copied!');
+  }
+} {
   var shareData = {
     title: 'DRIP CHECK ⚡',
     text: lang==='fr'
